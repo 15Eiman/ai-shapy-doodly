@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShApIIDoOdlyy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    <style>
+        :root[data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f0f0f0;
+            --text-color: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .header {
+            position: relative;
+            background: linear-gradient(45deg, 
+                #ff1493, #ff0000, #ff8c00, #ffd700, 
+                #32cd32, #00ffff, #0000ff, #8a2be2);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            clip-path: ellipse(80% 100% at 50% 0%);
+            box-shadow: 
+                0 0 10px rgba(255, 20, 147, 0.5),
+                0 0 20px rgba(255, 0, 0, 0.5),
+                0 0 30px rgba(255, 140, 0, 0.5);
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header h1 {
+            font-family: 'Righteous', cursive;
+            font-size: 2.8em;
+            font-weight: bold;
+            text-shadow: 
+                2px 2px 0 #ff1493,
+                3px 3px 0 #ff8c00,
+                4px 4px 0 #32cd32;
+            letter-spacing: 2px;
+            margin-bottom: 0.3em;
+            transform: skew(-5deg);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        #canvas {
+            width: 350px;
+            height: 350px;
+            border: 6px solid;
+            border-image: linear-gradient(45deg, #ff1493, #32cd32) 1;
+            border-radius: 12px;
+            cursor: crosshair;
+            background: rgb(208, 214, 169);
+            margin: 15px 0;
+            touch-action: none;
+            box-shadow: 
+                0 0 8px rgba(255, 20, 147, 0.5),
+                0 0 15px rgba(50, 205, 50, 0.5),
+                inset 0 0 15px rgba(255, 20, 147, 0.2);
+        }
+
+        .controls {
+            margin: 15px 0;
+        }
+
+        .color-picker {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .color-option:hover {
+            transform: scale(1.2) rotate(360deg);
+        }
+
+        .color-option.active {
+            border: 3px solid #ff1493;
+            box-shadow: 0 0 15px #ff1493;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff1493, #32cd32);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+        }
+
+        #prediction {
+            margin-top: 15px;
+            font-size: 1.3em;
+            color: var(--text-color);
+            text-shadow: 0 0 10px rgba(255, 20, 147, 0.8);
+        }
+
+        #probabilities {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .probability-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            margin: 8px 0;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .probability-fill {
+            background: linear-gradient(45deg, #ff1493, #32cd32);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            min-width: 40px;
+            text-align: right;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            font-size: 0.9em;
+        }
+
+        h3 {
+            color: var(--text-color);
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(255, 20, 147, 0.8);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .theme-toggle-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 8px 15px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle-button .icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <button class="theme-toggle-button" onclick="toggleTheme()">
+            <span class="icon">🌙</span>
+            <span class="text">Dark</span>
+        </button>
+    </div>
+
+    <div class="header">
+        <h1>ShApIIDoOdlyy</h1>
+        <p>✨ Draw a shape and let AI guess what it is! ✨</p>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <div class="color-picker">
+                <div class="color-option active" style="background: black;" data-color="black"></div>
+                <div class="color-option" style="background: #ff1493;" data-color="#ff1493"></div>
+                <div class="color-option" style="background: #32cd32;" data-color="#32cd32"></div>
+                <div class="color-option" style="background: #00ffff;" data-color="#00ffff"></div>
+                <div class="color-option" style="background: #ff8c00;" data-color="#ff8c00"></div>
+            </div>
+        </div>
+
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <div>
+            <button onclick="clearCanvas()">✨ Clear ✨</button>
+            <button onclick="predictShape()">🔮 Predict Shape 🔮</button>
+        </div>
+        <div id="prediction"></div>
+        <div id="probabilities"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let currentColor = 'black';
+        let lastX = 0;
+        let lastY = 0;
+
+        // Initialize canvas
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 8;  // Increased line width for better shape recognition
+
+        // Color picker functionality
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelector('.color-option.active').classList.remove('active');
+                this.classList.add('active');
+                currentColor = this.dataset.color;
+            });
+        });
+
+        // Drawing functionality
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            let x, y;
+            if (e.type === 'mousemove') {
+                x = e.offsetX;
+                y = e.offsetY;
+            } else if (e.type === 'touchmove') {
+                const rect = canvas.getBoundingClientRect();
+                x = e.touches[0].clientX - rect.left;
+                y = e.touches[0].clientY - rect.top;
+                e.preventDefault();
+            }
+
+            ctx.strokeStyle = currentColor;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            [lastX, lastY] = [x, y];
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            if (e.type === 'mousedown') {
+                [lastX, lastY] = [e.offsetX, e.offsetY];
+            } else if (e.type === 'touchstart') {
+                const rect = canvas.getBoundingClientRect();
+                [lastX, lastY] = [
+                    e.touches[0].clientX - rect.left,
+                    e.touches[0].clientY - rect.top
+                ];
+                e.preventDefault();
+            }
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch events
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+
+        function clearCanvas() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('prediction').textContent = '';
+            document.getElementById('probabilities').innerHTML = '';
+        }
+
+        function predictShape() {
+            // Create a copy of the canvas
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            
+            // Copy and process the image
+            tempCtx.fillStyle = 'white';
+            tempCtx.fillRect(0, 0, canvas.width, canvas.height);
+            tempCtx.drawImage(canvas, 0, 0);
+            
+            const imageData = tempCanvas.toDataURL('image/png');
+            
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: imageData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                const confidence = (data.confidence * 100).toFixed(2);
+                document.getElementById('prediction').textContent = 
+                    `I think you drew a ${data.prediction} (${confidence}% confident)!`;
+                
+                // Display all probabilities
+                const probDiv = document.getElementById('probabilities');
+                probDiv.innerHTML = '<h3>All Probabilities:</h3>';
+                
+                Object.entries(data.all_probabilities)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([shape, prob]) => {
+                        const percentage = (prob * 100).toFixed(2);
+                        probDiv.innerHTML += `
+                            <div class="probability-bar">
+                                <div class="probability-fill" style="width: ${percentage}%">
+                                    ${shape}: ${percentage}%
+                                </div>
+                            </div>`;
+                    });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('prediction').textContent = 
+                    'Oops! Something went wrong with the prediction.';
+            });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeButton = document.querySelector('.theme-toggle-button');
+            const iconSpan = themeButton.querySelector('.icon');
+            const textSpan = themeButton.querySelector('.text');
+            
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                iconSpan.textContent = '☀️';
+                textSpan.textContent = 'Light';
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                iconSpan.textContent = '🌙';
+                textSpan.textContent = 'Dark';
+            }
+        }
+    </script>
+</body>
+</html> 
